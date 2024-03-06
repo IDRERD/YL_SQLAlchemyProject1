@@ -12,17 +12,22 @@ from flask import render_template, url_for, redirect, request, make_response, ab
 from forms.user import RegisterForm
 from flask import session
 from flask_login import LoginManager, login_required, logout_user, login_user, current_user
+from flask_restful import *
+from data import news_resources
 
 app = flask.Flask(__name__)
 app.config["SECRET_KEY"] = 'yandexlyceum_secret_key'
+api = Api(app)
 
 login_manager = LoginManager()
 login_manager.init_app(app)
 
 
 def main():
-    db_session.global_init("db/mars.db")
-    app.register_blueprint(news_api.blueprint)
+    db_session.global_init("db/blogs.db")
+    # app.register_blueprint(news_api.blueprint)
+    api.add_resource(news_resources.NewsListResource, "/api/v2/news")
+    api.add_resource(news_resources.NewsResource, "/api/v2/news/<int:news_id>")
     app.run()
 
 
